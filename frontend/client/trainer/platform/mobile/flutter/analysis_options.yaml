@@ -124,7 +124,6 @@ linter:
     - prefer_typing_uninitialized_variables
     - prefer_void_to_null
     - provide_deprecation_message
-    - public_member_api_docs
     - recursive_getters
     - sized_box_for_whitespace
     - slash_for_doc_comments
@@ -177,3 +176,4 @@ linter:
 #    - prefer_relative_imports
 #    - prefer_single_quotes
 #    - unnecessary_final
+#    - public_member_api_docs
