@@ -1,4 +1,4 @@
-package com.nyarian.childspeak.childspeak
+package com.nyarian.childspeak
 
 import io.flutter.embedding.android.FlutterActivity
 
