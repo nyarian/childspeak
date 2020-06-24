@@ -11,6 +11,8 @@ dependencies:
     sdk: flutter
   estd:
     path: ../../../../../../backend/estd
+  domain:
+    path: ../../../../../../backend/domain
 
 dev_dependencies:
   flutter_test:
