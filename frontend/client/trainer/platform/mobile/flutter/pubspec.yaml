@@ -13,6 +13,8 @@ dependencies:
     path: ../../../../../../backend/estd
   domain:
     path: ../../../../../../backend/domain
+  flutter_gateway:
+    path: ../../../../../../backend/driver/gateway/flutter_gateway
 
 dev_dependencies:
   flutter_test:
