@@ -128,7 +128,6 @@ linter:
     - sized_box_for_whitespace
     - slash_for_doc_comments
     - sort_child_properties_last
-    - sort_constructors_first
     - sort_pub_dependencies
     - sort_unnamed_constructors_first
     - test_types_in_equals
@@ -177,3 +176,4 @@ linter:
 #    - prefer_double_quotes
 #    - unnecessary_final
 #    - public_member_api_docs
+#    - sort_constructors_first

@@ -1,4 +1,4 @@
-import "package:flutter/material.dart";
+import 'package:flutter/material.dart';
 
 void main() => runApp(const ChildSpeak());
 
@@ -7,11 +7,11 @@ class ChildSpeak extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-        title: "Flutter Demo",
+        title: 'Flutter Demo',
         theme: ThemeData(
           primarySwatch: Colors.blue,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: const Text("ChildSpeak"),
+        home: const Text('ChildSpeak'),
       );
 }

@@ -1,3 +1,3 @@
 library logger;
 
-export "package:estd/src/logger.dart";
+export 'package:estd/src/logger.dart';
