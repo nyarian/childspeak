@@ -99,7 +99,7 @@ linter:
     - prefer_const_literals_to_create_immutables
     - prefer_constructors_over_static_methods
     - prefer_contains
-    - prefer_double_quotes
+    - prefer_single_quotes
     - prefer_equal_for_default_values
     - prefer_expression_function_bodies
     - prefer_final_fields
@@ -174,6 +174,6 @@ linter:
 #    - omit_local_variable_types
 #    - prefer_int_literals
 #    - prefer_relative_imports
-#    - prefer_single_quotes
+#    - prefer_double_quotes
 #    - unnecessary_final
 #    - public_member_api_docs
