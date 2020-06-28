@@ -1,4 +1,11 @@
-// ignore: one_member_abstracts
 abstract class MessageRegistry {
-  String testFun();
+  //region Entities page
+  String entitiesNameSessionPageLabel();
+
+  String entitiesFetchError(String description);
+
+  String entitiesLoadingLabel();
+
+  String entitiesEmptyStateLabel();
+//endregion
 }

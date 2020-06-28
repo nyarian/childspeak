@@ -1,9 +1,31 @@
 {
   "@@last_modified": "2020-06-28T04:27:21.007223",
   "@@locale": "en",
-  "testFun": "Test",
-  "@testFun": {
-    "description": "test desc",
+  "entitiesNameSessionPageLabel": "Name all you see!",
+  "@entitiesNameSessionPageLabel": {
+    "description": "Label for the entities naming page from which the user will understand the purpose of it",
+    "type": "text",
+    "placeholders": {}
+  },
+  "entitiesFetchError": "Error occurred during loading: {description}",
+  "@entitiesFetchError": {
+    "description": "Informs the user about entities fetch exception",
+    "type": "text",
+    "placeholders": {
+      "description": {
+        "example": "Internet connection is unavailable"
+      }
+    }
+  },
+  "entitiesLoadingLabel": "Just a second...",
+  "@entitiesLoadingLabel": {
+    "description": "Informs the user that entities are loading",
+    "type": "text",
+    "placeholders": {}
+  },
+  "entitiesEmptyStateLabel": "Strange, seems that there are no items to name. Please try again later or contact the developer (orkay255@gmail.com) if the issue persists",
+  "@entitiesEmptyStateLabel": {
+    "description": "Informs the user that no entities were received but the fetch operation itself was successful",
     "type": "text",
     "placeholders": {}
   }

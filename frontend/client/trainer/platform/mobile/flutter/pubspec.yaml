@@ -13,6 +13,8 @@ dependencies:
     sdk: flutter
   estd:
     path: ../../../../../../backend/estd
+  presentation:
+    path: ../../../../../presentation
   domain:
     path: ../../../../../../backend/domain
   bloc:
@@ -22,6 +24,10 @@ dependencies:
   flutter_framework:
     path: ../../../../../framework/flutter_framework
   intl: 0.16.1
+  firebase_core: 0.4.5
+  cloud_firestore: 0.13.7
+  built_collection: 4.3.2
+  provider: 4.1.3
 
 dev_dependencies:
   flutter_test:

@@ -5,7 +5,7 @@ import 'package:childspeak/i18n/generated/messages_all.dart';
 class IntlDelegate implements LocalizationsDelegate<bool> {
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
-    Locale('ar')
+    Locale('ru')
   ];
 
   const IntlDelegate();

@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:domain/entity.dart';
 
 class FlutterFirestoreEntityRepository implements EntityRepository {
-  static const String _entitiesCollection = 'entities';
+  static const String _entitiesCollection = 'entity';
   static const String _titleField = 'title';
   static const String _depictionField = 'image_url';
 
@@ -13,7 +13,6 @@ class FlutterFirestoreEntityRepository implements EntityRepository {
   @override
   Future<List<Entity>> getAll({int limit = 200}) async {
     QuerySnapshot snapshot = await queryEntities(limit)
-        .orderBy('created_at', descending: true)
         .getDocuments();
     return snapshot.documents
         .map((DocumentSnapshot doc) => Entity(
