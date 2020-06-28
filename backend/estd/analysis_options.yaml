@@ -103,7 +103,6 @@ linter:
     - prefer_expression_function_bodies
     - prefer_final_fields
     - prefer_final_in_for_each
-    - prefer_final_locals
     - prefer_for_elements_to_map_fromIterable
     - prefer_foreach
     - prefer_function_declarations_over_variables
@@ -177,3 +176,4 @@ linter:
 #    - unnecessary_final
 #    - public_member_api_docs
 #    - sort_constructors_first
+#    - prefer_final_locals
