@@ -1,6 +1,6 @@
 name: childspeak
 description: Web & mobile application aimed to help children to start speaking
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: 'none'
 version: 0.0.0+1
 
 environment:
@@ -8,6 +8,8 @@ environment:
 
 dependencies:
   flutter:
+    sdk: flutter
+  flutter_localizations:
     sdk: flutter
   estd:
     path: ../../../../../../backend/estd
@@ -17,10 +19,12 @@ dependencies:
     path: ../../../../../state_management/bloc
   flutter_gateway:
     path: ../../../../../../backend/driver/gateway/flutter_gateway
+  intl: 0.16.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  intl_translation: 0.17.9
 
 flutter:
   uses-material-design: true

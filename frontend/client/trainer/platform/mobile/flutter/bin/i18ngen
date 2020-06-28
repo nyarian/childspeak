@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# TODO make generic in regards to the locales
+case $1 in
+--arb)
+  mkdir -p lib/i18n/arb
+  flutter pub run intl_translation:extract_to_arb --output-dir=lib/i18n/arb lib/i18n/intl_registry.dart
+  ;;
+--dart)
+  mkdir -p lib/i18n/generated
+  flutter pub run intl_translation:generate_from_arb --output-dir=lib/i18n/generated lib/i18n/intl_registry.dart lib/i18n/arb/intl_messages_en.arb lib/i18n/arb/intl_messages_ru.arb
+  ;;
+esac
