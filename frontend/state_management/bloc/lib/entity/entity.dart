@@ -19,6 +19,8 @@ class EntitiesBloc implements Resource {
 
   Stream<EntitiesState> get state => _stateBS.stream;
 
+  EntitiesState get currentState => _stateBS.value;
+
   final EntitiesFacade _facade;
   final Logger _logger;
 
@@ -27,7 +29,7 @@ class EntitiesBloc implements Resource {
   }
 
   void refresh() {
-    _eventSC.add(_RefreshEvent(() => _stateBS.value, _facade, _logger));
+    _eventSC.add(_RefreshEvent(() => currentState, _facade, _logger));
   }
 
   @override

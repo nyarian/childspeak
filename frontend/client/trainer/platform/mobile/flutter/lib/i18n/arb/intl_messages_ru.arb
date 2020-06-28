@@ -1,9 +1,31 @@
 {
   "@@last_modified": "2020-06-28T04:27:21.007223",
   "@@locale": "ru",
-  "testFun": "Тест",
-  "@testFun": {
-    "description": "тест деск",
+  "entitiesNameSessionPageLabel": "Озвучивай всё что видишь!",
+  "@entitiesNameSessionPageLabel": {
+    "description": "Label for the entities naming page from which the user will understand the purpose of it",
+    "type": "text",
+    "placeholders": {}
+  },
+  "entitiesFetchError": "Возникла ошибка при загрузке: {description}",
+  "@entitiesFetchError": {
+    "description": "Informs the user about entities fetch exception",
+    "type": "text",
+    "placeholders": {
+      "description": {
+        "example": "Интернет соединение недоступно"
+      }
+    }
+  },
+  "entitiesLoadingLabel": "Одну секунду...",
+  "@entitiesLoadingLabel": {
+    "description": "Informs the user that entities are loading",
+    "type": "text",
+    "placeholders": {}
+  },
+  "entitiesEmptyStateLabel": "Странно, кажется что здесь нет ничего для озвучивания. Пожалуйста, попробуйте загрузить страницу позже или свяжитесь с разработчиком (orkay255@gmail.com) если проблема не исчезнет.",
+  "@entitiesEmptyStateLabel": {
+    "description": "Informs the user that no entities were received but the fetch operation itself was successful",
     "type": "text",
     "placeholders": {}
   }
