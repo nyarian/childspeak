@@ -19,6 +19,8 @@ dependencies:
     path: ../../../../../state_management/bloc
   flutter_gateway:
     path: ../../../../../../backend/driver/gateway/flutter_gateway
+  flutter_framework:
+    path: ../../../../../framework/flutter_framework
   intl: 0.16.1
 
 dev_dependencies:
