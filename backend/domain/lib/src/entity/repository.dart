@@ -2,8 +2,8 @@ import 'package:domain/src/entity/entity.dart';
 
 abstract class EntityRepository {
 
-  Future<List<EntityId>> getAllIds({int limit = 200});
+  static const int noLimit = -1;
 
-  Future<List<Entity>> getByIds(List<EntityId> ids);
+  Future<List<Entity>> getAll({int limit = 200});
 
 }

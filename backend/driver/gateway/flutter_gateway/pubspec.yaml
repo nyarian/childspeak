@@ -8,6 +8,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  domain:
+    path: ../../../domain
+  cloud_firestore: 0.13.7
 
 dev_dependencies:
   flutter_test:
