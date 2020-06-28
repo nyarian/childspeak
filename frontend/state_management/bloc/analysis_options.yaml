@@ -78,7 +78,6 @@ linter:
     - no_runtimeType_toString
     - non_constant_identifier_names
     - null_closures
-    - one_member_abstracts
     - only_throw_errors
     - overridden_fields
     - package_api_docs
@@ -179,3 +178,4 @@ linter:
 #    - public_member_api_docs
 #    - sort_constructors_first
 #    - prefer_final_locals
+#    - one_member_abstracts
