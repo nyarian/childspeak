@@ -3,7 +3,7 @@ analyzer:
     implicit-casts: false
     implicit-dynamic: false
   exclude:
-    - lib/generated/i18n.dart
+    - lib/i18n/generated/**
 
 linter:
   rules:

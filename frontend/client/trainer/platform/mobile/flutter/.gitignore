@@ -1,3 +1,7 @@
+# Project-specific
+lib/i18n/generated/**
+lib/i18n/arb/intl_messages.arb
+
 # Miscellaneous
 *.class
 *.log
