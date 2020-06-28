@@ -5,10 +5,12 @@ import 'package:childspeak/i18n/registry.dart';
 import 'package:childspeak/ui/page/speaking_session.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:estd/logger.dart';
+import 'package:estd/type/lateinit.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_framework/log/flutter.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:provider/provider.dart';
 
 Future<void> main() async {
@@ -33,6 +35,16 @@ class DependencyContainer extends StatefulWidget {
 }
 
 class _DependencyContainerState extends State<DependencyContainer> {
+
+  final ImmutableLateinit<FlutterTts> _flutterTtsRef = ImmutableLateinit<
+      FlutterTts>.unset();
+
+  @override
+  void initState() {
+    super.initState();
+    _flutterTtsRef.value = FlutterTts();
+  }
+
   @override
   Widget build(BuildContext context) =>
       MultiProvider(
@@ -40,6 +52,7 @@ class _DependencyContainerState extends State<DependencyContainer> {
           Provider<Logger>.value(value: const FlutterLogger()),
           Provider<Firestore>.value(value: widget.firestore),
           Provider<MessageRegistry>.value(value: IntlRegistry()),
+          Provider<FlutterTts>.value(value: _flutterTtsRef.value),
         ],
         child: const ChildSpeak(),
       );

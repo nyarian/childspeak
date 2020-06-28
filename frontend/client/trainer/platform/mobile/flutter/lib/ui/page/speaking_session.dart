@@ -1,6 +1,8 @@
 import 'package:built_collection/built_collection.dart';
+import 'package:childspeak/assembly/framework/speaker.dart';
 import 'package:childspeak/i18n/registry.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_framework/domain/entity/speaker.dart';
 import 'package:presentation/entity.dart';
 import 'package:bloc/entity/entity.dart';
 import 'package:childspeak/assembly/bloc/entities.dart';
@@ -18,34 +20,40 @@ class SpeakingSessionPage extends StatefulWidget {
 class _SpeakingSessionPageState extends State<SpeakingSessionPage> {
   final ImmutableLateinit<EntitiesBloc> _blocRef =
       ImmutableLateinit<EntitiesBloc>.unset();
+  final ImmutableLateinit<EntitySpeaker> _speakerRef =
+      ImmutableLateinit<EntitySpeaker>.unset();
 
   @override
   void initState() {
     super.initState();
-    _blocRef.value = EntitiesBlocFactory()
-        .create(ProviderServiceLocator(context))
-          ..refresh();
+    var locator = ProviderServiceLocator(context);
+    _blocRef.value = EntitiesBlocFactory().create(locator)..refresh();
+    _speakerRef.value = EntitySpeakerFactory().create(locator);
   }
 
   @override
   void dispose() {
     super.dispose();
     _blocRef.value.close();
+    _speakerRef.value.close();
   }
 
   @override
   Widget build(BuildContext context) => _SpeakingSessionWidget(
         bloc: _blocRef.value,
+        speaker: _speakerRef.value,
         messages: ProviderServiceLocator(context).get<MessageRegistry>(),
       );
 }
 
 class _SpeakingSessionWidget extends StatelessWidget {
   final EntitiesBloc bloc;
+  final EntitySpeaker speaker;
   final MessageRegistry messages;
 
   const _SpeakingSessionWidget({
     @required this.bloc,
+    @required this.speaker,
     @required this.messages,
     Key key,
   }) : super(key: key);
@@ -115,6 +123,7 @@ class _SpeakingSessionWidget extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: EntityWidget(
             entity: entities[index],
+            speaker: speaker,
           ),
         ),
       );
@@ -122,14 +131,19 @@ class _SpeakingSessionWidget extends StatelessWidget {
 
 class EntityWidget extends StatelessWidget {
   final EntityPM entity;
+  final EntitySpeaker speaker;
 
   const EntityWidget({
     @required this.entity,
+    @required this.speaker,
     Key key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) => FittedBox(
-        child: Image.network(entity.imageUrl),
+        child: GestureDetector(
+          onTap: () => speaker.speak(entity.title),
+          child: Image.network(entity.imageUrl),
+        ),
       );
 }
