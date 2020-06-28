@@ -1,0 +1,16 @@
+name: flutter_framework
+description: Flutter framework bound components implementations
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  estd:
+    path: ../../../backend/estd
+  provider: 4.1.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
