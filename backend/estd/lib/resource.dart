@@ -1,3 +1,4 @@
-library resource;
-
-export 'package:estd/src/resource.dart';
+// ignore: one_member_abstracts
+abstract class Resource {
+  void close();
+}

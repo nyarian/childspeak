@@ -1,3 +1,25 @@
-library logger;
+abstract class Logger {
 
-export 'package:estd/src/logger.dart';
+  void log(String message);
+
+  void logError(Object error, [StackTrace trace]);
+
+}
+
+class NoOpLogger implements Logger {
+
+  factory NoOpLogger() => const NoOpLogger._const();
+
+  const NoOpLogger._const();
+
+  @override
+  void log(String message) {
+    // No-op
+  }
+
+  @override
+  void logError(Object error, [StackTrace trace]) {
+    // No-op
+  }
+
+}
