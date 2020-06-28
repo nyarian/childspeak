@@ -5,6 +5,5 @@ class EntitiesFacade {
 
   EntitiesFacade(this._repository);
 
-  Future<List<Entity>> getAll() =>
-      _repository.getAllIds().then(_repository.getByIds);
+  Future<List<Entity>> getAll() => _repository.getAll();
 }
