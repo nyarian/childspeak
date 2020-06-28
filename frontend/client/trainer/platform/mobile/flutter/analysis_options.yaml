@@ -6,7 +6,6 @@ analyzer:
 linter:
   rules:
     - always_declare_return_types
-    - always_put_control_body_on_new_line
     - always_put_required_named_parameters_first
     - always_require_non_null_named_parameters
     - annotate_overrides
@@ -165,6 +164,7 @@ linter:
     - void_checks
 
     # Omitted linter rules
+#    - always_put_control_body_on_new_line
 #    - always_specify_types
 #    - avoid_annotating_with_dynamic
 #    - avoid_private_typedef_functions

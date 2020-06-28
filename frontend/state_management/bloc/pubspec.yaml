@@ -10,3 +10,12 @@ dependencies:
   estd:
     path: ../../../backend/estd
   built_collection: 4.3.2
+  optional: 5.0.0
+  rxdart: 0.24.1
+  equatable: 1.2.0
+
+dev_dependencies:
+  test: ^1.14.0
+  mockito: 4.1.1
+  test_estd:
+    path: ../../../backend/test_estd
