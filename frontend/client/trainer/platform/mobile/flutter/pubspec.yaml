@@ -17,10 +17,10 @@ dependencies:
     path: ../../../../../presentation
   domain:
     path: ../../../../../../backend/domain
+  infrastructure:
+    path: ../../../../../../backend/infrastructure
   bloc:
     path: ../../../../../state_management/bloc
-  flutter_gateway:
-    path: ../../../../../../backend/driver/gateway/flutter_gateway
   flutter_framework:
     path: ../../../../../framework/flutter_framework
   intl: 0.16.1
