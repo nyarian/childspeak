@@ -4,15 +4,14 @@ import 'package:cms/assembly/bloc/authentication.dart';
 import 'package:cms/page/entity/add.dart';
 import 'package:cms/page/sign_in.dart';
 import 'package:cms/page/splash.dart';
+import 'package:estd/logger.dart';
 import 'package:estd/type/lateinit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_framework/log/flutter.dart';
 import 'package:provider/provider.dart';
 
-void main() {
-  runApp(const DependencyContainerWidget());
-}
+void main() => runApp(const DependencyContainerWidget());
 
 class DependencyContainerWidget extends StatefulWidget {
   const DependencyContainerWidget({Key key}) : super(key: key);
@@ -44,6 +43,7 @@ class _DependencyContainerWidgetState extends State<DependencyContainerWidget> {
         providers: <Provider<dynamic>>[
           Provider<Firestore>.value(value: Firestore.instance),
           Provider<AuthenticationBloc>.value(value: _blocRef.value),
+          Provider<Logger>.value(value: const FlutterLogger()),
         ],
         child: const ChildSpeakCMS(),
       );
