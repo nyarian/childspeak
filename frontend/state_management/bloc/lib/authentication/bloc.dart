@@ -36,6 +36,9 @@ class AuthenticationBloc implements Resource {
   void onAnonymousSignInEvent() =>
       _eventSC.add(_AnonymousSignInEvent(_facade, _logger));
 
+  void onEmailPasswordSignInEvent(String email, String password) => _eventSC
+      .add(_EmailPasswordSignInEvent(email, password, _facade, _logger));
+
   void onAuthenticationErrorProcessedEvent() =>
       _eventSC.add(const _ClearAuthenticationErrorEvent());
 
@@ -162,6 +165,44 @@ class _AnonymousSignInEvent implements _AuthenticationEvent {
   Future<AuthenticationState> _authenticate(_StateProvider provider) async {
     try {
       await _facade.authenticateAnonymously();
+      return provider()._copy(
+        authStatus: AuthenticationStatus.authenticated.toOptional,
+        processStatus: AuthenticationProcessStatus.idle.toOptional,
+      );
+    } on Object catch (e, st) {
+      _logger.logError(e, st);
+      return provider()._copy(error: e.toOptional);
+    }
+  }
+}
+
+class _EmailPasswordSignInEvent implements _AuthenticationEvent {
+  final String _email;
+  final String _password;
+  final AuthenticationFacade _facade;
+  final Logger _logger;
+
+  _EmailPasswordSignInEvent(
+      this._email, this._password, this._facade, this._logger);
+
+  @override
+  Stream<AuthenticationState> process(_StateProvider provider) async* {
+    final currentState = provider();
+    if (currentState.processStatus == AuthenticationProcessStatus.idle &&
+        currentState.authStatus == AuthenticationStatus.notAuthenticated) {
+      yield currentState._copy(
+          processStatus: AuthenticationProcessStatus.authenticating.toOptional);
+      yield await _authenticate(provider);
+    } else {
+      _logger.logError(_NotEligibleForAnonymousAuthException(
+          message: 'Current state: $currentState'));
+    }
+  }
+
+  Future<AuthenticationState> _authenticate(_StateProvider provider) async {
+    try {
+      await _facade.authenticateWithEmailAndPassword(
+          email: _email, password: _password);
       return provider()._copy(
         authStatus: AuthenticationStatus.authenticated.toOptional,
         processStatus: AuthenticationProcessStatus.idle.toOptional,

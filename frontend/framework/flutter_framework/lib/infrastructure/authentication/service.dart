@@ -11,4 +11,11 @@ class FirebaseAuthenticationService implements AuthenticationService {
 
   @override
   Future<void> authenticateAnonymously() => _auth.signInAnonymously();
+
+  @override
+  Future<void> authenticateWithEmailAndPassword({
+    String email,
+    String password,
+  }) =>
+      _auth.signInWithEmailAndPassword(email: email, password: password);
 }
