@@ -1,6 +1,6 @@
 Future<void> reschedule({int times}) async {
   if (times == null) {
-    return Future<void>.value(null);
+    return Future<void>.value();
   } else if (times < 1) {
     throw ArgumentError('Times cannot be less then 1');
   } else {

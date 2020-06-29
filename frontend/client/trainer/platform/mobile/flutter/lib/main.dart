@@ -70,8 +70,8 @@ class ChildSpeak extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MaterialApp(
         title: 'ChildSpeak',
-        localizationsDelegates: <LocalizationsDelegate<dynamic>>[
-          const IntlDelegate(),
+        localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
+          IntlDelegate(),
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,

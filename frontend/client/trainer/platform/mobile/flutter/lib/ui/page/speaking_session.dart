@@ -113,11 +113,10 @@ class _SpeakingSessionWidget extends StatelessWidget {
 
   Widget _buildErrorTree(BuildContext context, Object error) => Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Text(messages.entitiesFetchError(error.toString())),
           IconButton(
-            icon: Icon(Icons.refresh),
+            icon: const Icon(Icons.refresh),
             onPressed: () =>
                 bloc.refresh(Localizations.localeOf(context).languageCode),
           )
@@ -126,7 +125,6 @@ class _SpeakingSessionWidget extends StatelessWidget {
 
   Widget _buildLoadingTree() => Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           const CircularProgressIndicator(),
           Text(messages.entitiesLoadingLabel()),
@@ -135,11 +133,10 @@ class _SpeakingSessionWidget extends StatelessWidget {
 
   Widget _buildEmptyStateTree(BuildContext context) => Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Text(messages.entitiesEmptyStateLabel()),
           IconButton(
-            icon: Icon(Icons.refresh),
+            icon: const Icon(Icons.refresh),
             onPressed: () =>
                 bloc.refresh(Localizations.localeOf(context).languageCode),
           )
@@ -149,7 +146,6 @@ class _SpeakingSessionWidget extends StatelessWidget {
   Widget _buildEntitiesTree(BuiltList<EntityPM> entities) => PageView.builder(
         physics: const PageScrollPhysics(),
         itemCount: entities.length,
-        scrollDirection: Axis.horizontal,
         itemBuilder: (ctx, index) => Padding(
           padding: const EdgeInsets.all(8.0),
           child: EntityWidget(
