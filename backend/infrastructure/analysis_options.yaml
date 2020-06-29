@@ -9,6 +9,7 @@ linter:
     - always_put_required_named_parameters_first
     - always_require_non_null_named_parameters
     - annotate_overrides
+    - avoid_as
     - avoid_bool_literals_in_conditional_expressions
     - avoid_catches_without_on_clauses
     - avoid_catching_errors
@@ -162,8 +163,7 @@ linter:
 #    - sized_box_for_whitespace
 #    - use_is_even_rather_than_modulo
 
-#     Omitted linter rules
-#    - avoid_as # As there is a lot of parsing involved
+    # Omitted linter rules
 #    - always_put_control_body_on_new_line
 #    - always_specify_types
 #    - avoid_annotating_with_dynamic
