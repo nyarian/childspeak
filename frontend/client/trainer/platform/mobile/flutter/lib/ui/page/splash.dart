@@ -74,7 +74,7 @@ class _SplashPageState extends State<SplashPage> {
           Text(_messages.splashPageAuthenticationError(state.error.toString())),
           const SizedBox(height: 16),
           IconButton(
-            icon: Icon(Icons.refresh),
+            icon: const Icon(Icons.refresh),
             onPressed: state.processStatus ==
                     AuthenticationProcessStatus.authenticating
                 ? _bloc.onAnonymousSignInEvent
