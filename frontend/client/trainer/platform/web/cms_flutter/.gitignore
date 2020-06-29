@@ -1,6 +1,6 @@
 # Project-specific
 # Contains secret data
-lib/firebase.dart
+web/index.html
 
 # Miscellaneous
 *.class

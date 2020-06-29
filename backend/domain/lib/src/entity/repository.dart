@@ -6,4 +6,6 @@ abstract class EntityRepository {
 
   Future<List<Entity>> getAll(String localeCode, {int limit = 200});
 
+  Future<EntityId> add(String localeCode, Entity entity);
+
 }

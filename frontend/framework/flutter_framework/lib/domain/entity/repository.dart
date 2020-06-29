@@ -24,10 +24,22 @@ class FlutterFirestoreEntityRepository implements EntityRepository {
   }
 
   Query queryEntities(String localeCode, int limit) {
-    final CollectionReference ref = _firestore
-        .collection(_entitiesCollection)
-        .document(_localeDocument)
-        .collection(localeCode);
+    final CollectionReference ref = _localizedEntitiesPath(localeCode);
     return limit == EntityRepository.noLimit ? ref : ref.limit(limit);
+  }
+
+  CollectionReference _localizedEntitiesPath(String localeCode) => _firestore
+      .collection(_entitiesCollection)
+      .document(_localeDocument)
+      .collection(localeCode);
+
+  @override
+  Future<EntityId> add(String localeCode, Entity entity) async {
+    DocumentReference result =
+        await _localizedEntitiesPath(localeCode).add(<String, dynamic>{
+      'title': entity.title,
+      'image_url': entity.depiction.toString(),
+    });
+    return EntityId(result.documentID);
   }
 }
