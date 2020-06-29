@@ -3,6 +3,7 @@ import 'package:domain/entity.dart';
 
 class FlutterFirestoreEntityRepository implements EntityRepository {
   static const String _entitiesCollection = 'entity';
+  static const String _localeDocument = 'locale';
   static const String _titleField = 'title';
   static const String _depictionField = 'image_url';
 
@@ -11,8 +12,9 @@ class FlutterFirestoreEntityRepository implements EntityRepository {
   FlutterFirestoreEntityRepository(this._firestore);
 
   @override
-  Future<List<Entity>> getAll({int limit = 200}) async {
-    QuerySnapshot snapshot = await queryEntities(limit).getDocuments();
+  Future<List<Entity>> getAll(String localeCode, {int limit = 200}) async {
+    QuerySnapshot snapshot =
+        await queryEntities(localeCode, limit).getDocuments();
     return snapshot.documents
         .map((DocumentSnapshot doc) => Entity(
             EntityId(doc.documentID),
@@ -21,7 +23,11 @@ class FlutterFirestoreEntityRepository implements EntityRepository {
         .toList();
   }
 
-  Query queryEntities(int limit) => limit == EntityRepository.noLimit
-      ? _firestore.collection(_entitiesCollection)
-      : _firestore.collection(_entitiesCollection).limit(limit);
+  Query queryEntities(String localeCode, int limit) {
+    final CollectionReference ref = _firestore
+        .collection(_entitiesCollection)
+        .document(_localeDocument)
+        .collection(localeCode);
+    return limit == EntityRepository.noLimit ? ref : ref.limit(limit);
+  }
 }

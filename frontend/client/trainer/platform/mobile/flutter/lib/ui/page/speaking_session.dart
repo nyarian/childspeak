@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:built_collection/built_collection.dart';
 import 'package:childspeak/assembly/framework/speaker.dart';
 import 'package:childspeak/i18n/registry.dart';
@@ -28,18 +30,39 @@ class _SpeakingSessionPageState extends State<SpeakingSessionPage> {
       ImmutableLateinit<EntitiesBloc>.unset();
   final ImmutableLateinit<EntitySpeaker> _speakerRef =
       ImmutableLateinit<EntitySpeaker>.unset();
+  final ImmutableLateinit<StreamSubscription<Object>>
+      _speakerLocaleUpdatingSubscriptionRef =
+      ImmutableLateinit<StreamSubscription<Object>>.unset();
 
   @override
   void initState() {
     super.initState();
     var locator = ProviderServiceLocator(context);
-    _blocRef.value = EntitiesBlocFactory().create(locator)..refresh();
+    _blocRef.value = EntitiesBlocFactory().create(locator);
     _speakerRef.value = EntitySpeakerFactory().create(locator);
+    _speakerLocaleUpdatingSubscriptionRef.value = _blocRef.value.state
+        .where((state) => state.localeCode != null)
+        .map((state) => state.localeCode)
+        .distinct()
+        .listen(_speakerRef.value.setLanguage);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    EntitiesState currentState = _blocRef.value.currentState;
+    String currentLocale = Localizations.localeOf(context).languageCode;
+    if (currentState == null ||
+        (currentState.isSuccessful &&
+            currentState.localeCode != currentLocale)) {
+      _blocRef.value.refresh(currentLocale);
+    }
   }
 
   @override
   void dispose() {
     super.dispose();
+    _speakerLocaleUpdatingSubscriptionRef.value.cancel();
     _blocRef.value.close();
     _speakerRef.value.close();
   }
@@ -80,22 +103,23 @@ class _SpeakingSessionWidget extends StatelessWidget {
     if (state == null || state.isRetrievingEntities) {
       return Center(child: _buildLoadingTree());
     } else if (state.hasError) {
-      return Center(child: _buildErrorTree(state.error));
+      return Center(child: _buildErrorTree(context, state.error));
     } else if (state.isEmpty()) {
-      return Center(child: _buildEmptyStateTree());
+      return Center(child: _buildEmptyStateTree(context));
     } else {
       return _buildEntitiesTree(state.entities.map(EntityPM.of).toBuiltList());
     }
   }
 
-  Widget _buildErrorTree(Object error) => Column(
+  Widget _buildErrorTree(BuildContext context, Object error) => Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Text(messages.entitiesFetchError(error.toString())),
           IconButton(
             icon: Icon(Icons.refresh),
-            onPressed: bloc.refresh,
+            onPressed: () =>
+                bloc.refresh(Localizations.localeOf(context).languageCode),
           )
         ],
       );
@@ -109,14 +133,15 @@ class _SpeakingSessionWidget extends StatelessWidget {
         ],
       );
 
-  Widget _buildEmptyStateTree() => Column(
+  Widget _buildEmptyStateTree(BuildContext context) => Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Text(messages.entitiesEmptyStateLabel()),
           IconButton(
             icon: Icon(Icons.refresh),
-            onPressed: bloc.refresh,
+            onPressed: () =>
+                bloc.refresh(Localizations.localeOf(context).languageCode),
           )
         ],
       );

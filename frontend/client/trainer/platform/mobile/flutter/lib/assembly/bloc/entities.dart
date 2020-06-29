@@ -7,12 +7,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class EntitiesBlocFactory {
 
+  static const String _fallbackLocale = 'en';
+
   factory EntitiesBlocFactory() => const EntitiesBlocFactory._();
 
   const EntitiesBlocFactory._();
 
   EntitiesBloc create(ServiceLocator locator) => EntitiesBloc(
     EntitiesFacade(
+      _fallbackLocale,
       FlutterFirestoreEntityRepository(
         locator.get<Firestore>(),
       ),

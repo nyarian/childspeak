@@ -5,6 +5,7 @@ import 'package:estd/logger.dart';
 import 'package:test_estd/test_estd.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
+import 'package:tuple/tuple.dart';
 
 void main() {
   final facade = MockEntitiesFacade();
@@ -16,7 +17,7 @@ void main() {
   EntitiesBloc createTestSubject() => EntitiesBloc(facade, NoOpLogger());
 
   test('assert that newly constructed bloc does not emit anything', () async {
-    when(facade.getAll()).thenThrow(TestException());
+    when(facade.getAll(any)).thenThrow(TestException());
     final subject = EntitiesBloc(facade, ForbiddenLogger());
     await suspendMillis(20);
     expect(subject.state, emitsInOrder(<dynamic>[]));
@@ -24,8 +25,9 @@ void main() {
 
   test('assert that retrieving state was emitted initially on refresh',
       () async {
-    when(facade.getAll()).thenAnswer((_) async => const <Entity>[]);
-    final subject = createTestSubject()..refresh();
+    when(facade.getAll(any))
+        .thenAnswer((_) async => const Tuple2('en', <Entity>[]));
+    final subject = createTestSubject()..refresh('en');
     expect(
         subject.state,
         emitsInOrder(<dynamic>[
@@ -36,8 +38,9 @@ void main() {
   test(
       'assert that successful and non-loading state was emitted after '
       'receiving the facade response', () async {
-    when(facade.getAll()).thenAnswer((_) async => const <Entity>[]);
-    final subject = createTestSubject()..refresh();
+    when(facade.getAll(any))
+        .thenAnswer((_) async => const Tuple2('en', <Entity>[]));
+    final subject = createTestSubject()..refresh('en');
     await suspendMillis(5);
     expect(
         subject.state,
@@ -48,8 +51,9 @@ void main() {
   }, timeout: const Timeout(Duration(seconds: 1)));
 
   test('assert that state is empty if getAll() returns empty list', () async {
-    when(facade.getAll()).thenAnswer((_) async => const <Entity>[]);
-    final subject = createTestSubject()..refresh();
+    when(facade.getAll(any))
+        .thenAnswer((_) async => const Tuple2('en', <Entity>[]));
+    final subject = createTestSubject()..refresh('en');
     await suspendMillis(5);
     expect(
         subject.state,
@@ -60,8 +64,9 @@ void main() {
 
   test('assert that state is not empty if getAll() returns non-empty list',
       () async {
-    when(facade.getAll()).thenAnswer((_) async => <Entity>[MockEntity()]);
-    final subject = createTestSubject()..refresh();
+    when(facade.getAll(any))
+        .thenAnswer((_) async => Tuple2('en', <Entity>[MockEntity()]));
+    final subject = createTestSubject()..refresh('en');
     await suspendMillis(5);
     expect(
         subject.state,
@@ -73,8 +78,8 @@ void main() {
   test('assert that error state was emitted if getAll call throws an error',
       () async {
     final givenError = TestException();
-    when(facade.getAll()).thenAnswer((_) async => throw TestException());
-    final subject = createTestSubject()..refresh();
+    when(facade.getAll(any)).thenAnswer((_) async => throw TestException());
+    final subject = createTestSubject()..refresh('en');
     await suspendMillis(5);
     expect(
         subject.state,
@@ -86,18 +91,18 @@ void main() {
   test(
       'assert that error was replaced by success state if facade returned '
       'a valid list after refresh', () async {
-    final answers = <Future<List<Entity>> Function()>[
+    final answers = <Future<Tuple2<String, List<Entity>>> Function()>[
       () async => throw TestException(),
-      () async => const <Entity>[],
+      () async => const Tuple2('en', <Entity>[]),
     ];
-    when(facade.getAll()).thenAnswer((_) => answers.removeAt(0)());
-    final subject = createTestSubject()..refresh();
+    when(facade.getAll(any)).thenAnswer((_) => answers.removeAt(0)());
+    final subject = createTestSubject()..refresh('en');
     expect(
         subject.state,
         emitsInOrder(<dynamic>[
           anything,
           predicate<EntitiesState>((state) {
-            if (state.hasError) subject.refresh();
+            if (state.hasError) subject.refresh('en');
             return state.hasError;
           }),
           anything,

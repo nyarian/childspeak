@@ -9,6 +9,7 @@ import 'package:estd/resource.dart';
 import 'package:built_collection/built_collection.dart';
 import 'package:optional/optional.dart';
 import 'package:rxdart/subjects.dart';
+import 'package:tuple/tuple.dart';
 
 class EntitiesBloc implements Resource {
   final StreamController<_EntitiesEvent> _eventSC =
@@ -28,8 +29,9 @@ class EntitiesBloc implements Resource {
     _eventSC.stream.asyncExpand(_EntitiesEvent._sProcess).listen(_stateBS.add);
   }
 
-  void refresh() {
-    _eventSC.add(_RefreshEvent(() => currentState, _facade, _logger));
+  void refresh(String localeCode) {
+    _eventSC
+        .add(_RefreshEvent(localeCode, () => currentState, _facade, _logger));
   }
 
   @override
@@ -40,21 +42,23 @@ class EntitiesBloc implements Resource {
 }
 
 class EntitiesState with ErrorProneState, EquatableMixin {
+  final String localeCode;
   final BuiltList<Entity> entities;
   @override
   final Object error;
   final bool isRetrievingEntities;
 
-  EntitiesState._(this.entities, this.error, {this.isRetrievingEntities});
+  EntitiesState._(this.localeCode, this.entities, this.error,
+      {this.isRetrievingEntities});
 
-  EntitiesState._success(List<Entity> entities)
-      : this._(entities.build(), null, isRetrievingEntities: false);
+  EntitiesState._success(String localeCode, List<Entity> entities)
+      : this._(localeCode, entities.build(), null, isRetrievingEntities: false);
 
   EntitiesState._retrieving()
-      : this._(BuiltList<Entity>(), null, isRetrievingEntities: true);
+      : this._(null, null, null, isRetrievingEntities: true);
 
   EntitiesState.error(Object error)
-      : this._(null, error, isRetrievingEntities: false);
+      : this._(null, null, error, isRetrievingEntities: false);
 
   bool get isSuccessful => !hasError && !isRetrievingEntities;
 
@@ -63,11 +67,13 @@ class EntitiesState with ErrorProneState, EquatableMixin {
       (throw StateError('State is not successful, isEmpty call is illegal\n'));
 
   EntitiesState _copy({
+    Optional<String> localeCode,
     Optional<BuiltList<Entity>> entities,
     Optional<Object> error,
     Optional<bool> isRetrievingEntities,
   }) =>
       EntitiesState._(
+        localeCode == null ? this.localeCode : localeCode.orElse(null),
         entities == null ? this.entities : entities.orElse(null),
         error == null ? this.error : error.orElse(null),
         isRetrievingEntities: isRetrievingEntities == null
@@ -76,6 +82,7 @@ class EntitiesState with ErrorProneState, EquatableMixin {
       );
 
   EntitiesState _append(Iterable<Entity> entities) => EntitiesState._(
+        localeCode,
         <Entity>[...this.entities, ...entities].toBuiltList(),
         error,
         isRetrievingEntities: false,
@@ -97,11 +104,12 @@ abstract class _EntitiesEvent {
 }
 
 class _RefreshEvent implements _EntitiesEvent {
+  final String _localeCode;
   final _EntitiesStateProvider _provider;
   final EntitiesFacade _facade;
   final Logger _logger;
 
-  _RefreshEvent(this._provider, this._facade, this._logger);
+  _RefreshEvent(this._localeCode, this._provider, this._facade, this._logger);
 
   @override
   Stream<EntitiesState> _process() async* {
@@ -109,8 +117,9 @@ class _RefreshEvent implements _EntitiesEvent {
     if (currentState == null || !currentState.isRetrievingEntities) {
       yield retrievingState();
       try {
-        final entities = await _facade.getAll();
-        yield successState(entities);
+        final Tuple2<String, List<Entity>> result =
+            await _facade.getAll(_localeCode);
+        yield successState(result.item1, result.item2);
       } on Object catch (e, st) {
         _logger.logError(e, st);
         yield errorState(e);
@@ -118,10 +127,10 @@ class _RefreshEvent implements _EntitiesEvent {
     }
   }
 
-  EntitiesState successState(List<Entity> entities) {
+  EntitiesState successState(String localeCode, List<Entity> entities) {
     final currentState = _provider();
-    return currentState == null
-        ? EntitiesState._success(entities)
+    return currentState == null || currentState.localeCode != localeCode
+        ? EntitiesState._success(localeCode, entities)
         : currentState._append(entities);
   }
 
