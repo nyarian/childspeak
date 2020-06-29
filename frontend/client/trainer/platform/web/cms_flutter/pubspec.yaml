@@ -1,0 +1,35 @@
+name: cms
+description: CMS for the trainer app
+publish_to: 'none'
+version: 0.0.0+1
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  estd:
+    path: ../../../../../../backend/estd
+  presentation:
+      path: ../../../../../presentation
+  domain:
+      path: ../../../../../../backend/domain
+  infrastructure:
+      path: ../../../../../../backend/infrastructure
+  bloc:
+      path: ../../../../../state_management/bloc
+  flutter_framework:
+      path: ../../../../../framework/flutter_framework
+  firebase: 7.3.0
+  firebase_core: 0.4.5
+  firebase_auth: 0.16.1
+  provider: 4.1.3
+  cloud_firestore: 0.13.7
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
