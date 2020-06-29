@@ -12,8 +12,7 @@ class FlutterFirestoreEntityRepository implements EntityRepository {
 
   @override
   Future<List<Entity>> getAll({int limit = 200}) async {
-    QuerySnapshot snapshot = await queryEntities(limit)
-        .getDocuments();
+    QuerySnapshot snapshot = await queryEntities(limit).getDocuments();
     return snapshot.documents
         .map((DocumentSnapshot doc) => Entity(
             EntityId(doc.documentID),
