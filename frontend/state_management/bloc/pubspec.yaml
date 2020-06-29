@@ -11,6 +11,7 @@ dependencies:
     path: ../../../backend/infrastructure
   estd:
     path: ../../../backend/estd
+  meta: 1.1.8
   built_collection: 4.3.2
   optional: 5.0.0
   rxdart: 0.24.1
