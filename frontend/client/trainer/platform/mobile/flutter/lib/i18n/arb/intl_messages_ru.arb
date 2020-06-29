@@ -1,6 +1,22 @@
 {
   "@@last_modified": "2020-06-28T04:27:21.007223",
   "@@locale": "ru",
+  "splashPageAuthenticationError": "При первом взаимодействии с сервером произошла ошибка: {message}.",
+  "@splashPageAuthenticationError": {
+    "description": "Label for the entities naming page from which the user will understand the purpose of it",
+    "type": "text",
+    "placeholders": {
+      "message": {
+        "example": "Internet connection is unavailable"
+      }
+    }
+  },
+  "splashPageLoadingLabel": "Подготавливаем всё для вас...",
+  "@splashPageLoadingLabel": {
+    "description": "Label describing splash page loading state (encapsulated authentication)",
+    "type": "text",
+    "placeholders": {}
+  },
   "entitiesNameSessionPageLabel": "Озвучивай всё что видишь!",
   "@entitiesNameSessionPageLabel": {
     "description": "Label for the entities naming page from which the user will understand the purpose of it",

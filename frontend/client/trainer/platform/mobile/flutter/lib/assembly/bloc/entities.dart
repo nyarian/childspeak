@@ -1,4 +1,4 @@
-import 'package:bloc/entity/entity.dart';
+import 'package:bloc/entity/bloc.dart';
 import 'package:bloc/entity/facade.dart';
 import 'package:estd/ioc/service_locator.dart';
 import 'package:estd/logger.dart';

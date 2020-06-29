@@ -4,13 +4,19 @@ import 'package:childspeak/i18n/registry.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_framework/domain/entity/speaker.dart';
 import 'package:presentation/entity.dart';
-import 'package:bloc/entity/entity.dart';
+import 'package:bloc/entity/bloc.dart';
 import 'package:childspeak/assembly/bloc/entities.dart';
 import 'package:estd/type/lateinit.dart';
 import 'package:flutter_framework/ioc/provider_locator.dart';
 import 'package:flutter/material.dart';
 
 class SpeakingSessionPage extends StatefulWidget {
+  static const String name = 'speaking_session';
+
+  // ignore: prefer_constructors_over_static_methods
+  static SpeakingSessionPage builder(BuildContext ctx) =>
+      const SpeakingSessionPage();
+
   const SpeakingSessionPage({Key key}) : super(key: key);
 
   @override
