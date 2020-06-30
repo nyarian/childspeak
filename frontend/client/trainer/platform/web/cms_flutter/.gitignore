@@ -1,6 +1,7 @@
 # Project-specific
 # Contains secret data
 web/index.html
+.firebase/**
 
 # Miscellaneous
 *.class
