@@ -27,6 +27,7 @@ class EntityCrudBloc implements Resource {
   EntityCrudBloc(this._facade, this._logger) {
     _stateSubject.add(EntityCrudState._idle());
     _eventSC.stream
+        // TODO(nyarian): experiment with concatMap to serialize processing
         .flatMap((value) => value.process(() => currentState))
         .listen(_stateSubject.add);
   }
