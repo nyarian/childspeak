@@ -88,16 +88,29 @@ class _SpeakingSessionWidget extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: Text(messages.entitiesNameSessionPageLabel()),
-        ),
-        body: StreamBuilder<EntitiesState>(
-          stream: bloc.state,
-          initialData: bloc.currentState,
-          builder: (ctx, snapshot) => _buildStateBasedTree(ctx, snapshot.data),
+  Widget build(BuildContext context) => StreamBuilder<EntitiesState>(
+        stream: bloc.state,
+        initialData: bloc.currentState,
+        builder: (ctx, snapshot) => Scaffold(
+          appBar: AppBar(
+            title: Text(messages.entitiesNameSessionPageLabel()),
+            actions: _buildRefreshActionIfHasItems(context, snapshot.data),
+          ),
+          body: _buildStateBasedTree(ctx, snapshot.data),
         ),
       );
+
+  List<Widget> _buildRefreshActionIfHasItems(
+    BuildContext context,
+    EntitiesState state,
+  ) =>
+      <Widget>[
+        if (state?.isSuccessful ?? false)
+          IconButton(
+            onPressed: () => bloc.refresh(state.localeCode, replace: true),
+            icon: const Icon(Icons.refresh),
+          )
+      ];
 
   Widget _buildStateBasedTree(BuildContext context, EntitiesState state) {
     if (state == null || state.isRetrievingEntities) {
