@@ -3,8 +3,7 @@ import 'package:domain/entity.dart';
 
 class FlutterFirestoreEntityRepository implements EntityRepository {
   static const String _entitiesCollection = 'entity';
-  static const String _localeDocument = 'locale';
-  static const String _titleField = 'title';
+  static const String _localeMap = 'i18n';
   static const String _depictionField = 'image_url';
 
   final Firestore _firestore;
@@ -18,27 +17,26 @@ class FlutterFirestoreEntityRepository implements EntityRepository {
     return snapshot.documents
         .map((DocumentSnapshot doc) => Entity(
             EntityId(doc.documentID),
-            doc.data[_titleField] as String,
+            doc.data[_localeMap][localeCode] as String,
             Uri.parse(doc.data[_depictionField] as String)))
         .toList();
   }
 
   Query queryEntities(String localeCode, int limit) {
-    final CollectionReference ref = _localizedEntitiesPath(localeCode);
-    return limit == EntityRepository.noLimit ? ref : ref.limit(limit);
+    final Query query = _localizedEntitiesQuery(localeCode);
+    return limit == EntityRepository.noLimit ? query : query.limit(limit);
   }
 
-  CollectionReference _localizedEntitiesPath(String localeCode) => _firestore
+  Query _localizedEntitiesQuery(String localeCode) => _firestore
       .collection(_entitiesCollection)
-      .document(_localeDocument)
-      .collection(localeCode);
+      .where('$_localeMap.$localeCode', isGreaterThan: '');
 
   @override
   Future<EntityId> add(String localeCode, Entity entity) async {
     DocumentReference result =
-        await _localizedEntitiesPath(localeCode).add(<String, dynamic>{
-      'title': entity.title,
-      'image_url': entity.depiction.toString(),
+        await _firestore.collection(_entitiesCollection).add(<String, dynamic>{
+      _localeMap: <String, String>{localeCode: entity.title},
+      _depictionField: entity.depiction.toString(),
     });
     return EntityId(result.documentID);
   }
