@@ -7,6 +7,7 @@ import 'package:equatable/equatable.dart';
 import 'package:estd/logger.dart';
 import 'package:estd/resource.dart';
 import 'package:built_collection/built_collection.dart';
+import 'package:meta/meta.dart';
 import 'package:optional/optional.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:tuple/tuple.dart';
@@ -29,9 +30,14 @@ class EntitiesBloc implements Resource {
     _eventSC.stream.asyncExpand(_EntitiesEvent._sProcess).listen(_stateBS.add);
   }
 
-  void refresh(String localeCode) {
-    _eventSC
-        .add(_RefreshEvent(localeCode, () => currentState, _facade, _logger));
+  void refresh(String localeCode, {bool replace = false}) {
+    _eventSC.add(_RefreshEvent(
+      localeCode,
+      () => currentState,
+      _facade,
+      _logger,
+      replaceEntities: replace,
+    ));
   }
 
   @override
@@ -108,8 +114,17 @@ class _RefreshEvent implements _EntitiesEvent {
   final _EntitiesStateProvider _provider;
   final EntitiesFacade _facade;
   final Logger _logger;
+  final bool _replaceEntities;
 
-  _RefreshEvent(this._localeCode, this._provider, this._facade, this._logger);
+  _RefreshEvent(
+    this._localeCode,
+    this._provider,
+    this._facade,
+    this._logger, {
+    @required bool replaceEntities,
+  })  : assert(
+            replaceEntities != null, "'replaceEntities' parameter is required"),
+        _replaceEntities = replaceEntities;
 
   @override
   Stream<EntitiesState> _process() async* {
@@ -129,7 +144,9 @@ class _RefreshEvent implements _EntitiesEvent {
 
   EntitiesState successState(String localeCode, List<Entity> entities) {
     final currentState = _provider();
-    return currentState == null || currentState.localeCode != localeCode
+    return currentState == null ||
+            currentState.localeCode != localeCode ||
+            _replaceEntities
         ? EntitiesState._success(localeCode, entities)
         : currentState._append(entities);
   }
