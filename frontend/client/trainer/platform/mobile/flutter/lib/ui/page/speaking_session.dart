@@ -166,6 +166,8 @@ class _SpeakingSessionWidget extends StatelessWidget {
 
   Widget _buildEntitiesTree(BuiltList<EntityPM> entities) => PageView.builder(
         physics: const PageScrollPhysics(),
+        // Dirty hack for the next image preload
+        controller: PageController(viewportFraction: 0.99),
         itemCount: entities.length,
         itemBuilder: (ctx, index) => Padding(
           padding: const EdgeInsets.all(8.0),
