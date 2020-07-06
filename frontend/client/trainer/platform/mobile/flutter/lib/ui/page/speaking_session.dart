@@ -116,7 +116,12 @@ class _SpeakingSessionWidget extends StatelessWidget {
     if (state == null || state.isRetrievingEntities) {
       return Center(child: _buildLoadingTree());
     } else if (state.hasError) {
-      return Center(child: _buildErrorTree(context, state.error));
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: _buildErrorTree(context, state.error),
+        ),
+      );
     } else if (state.isEmpty()) {
       return Center(child: _buildEmptyStateTree(context));
     } else {
@@ -128,6 +133,7 @@ class _SpeakingSessionWidget extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Text(messages.entitiesFetchError(error.toString())),
+          const SizedBox(height: 8),
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () =>
@@ -140,6 +146,7 @@ class _SpeakingSessionWidget extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           const CircularProgressIndicator(),
+          const SizedBox(height: 8),
           Text(messages.entitiesLoadingLabel()),
         ],
       );
@@ -148,6 +155,7 @@ class _SpeakingSessionWidget extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Text(messages.entitiesEmptyStateLabel()),
+          const SizedBox(height: 8),
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () =>
