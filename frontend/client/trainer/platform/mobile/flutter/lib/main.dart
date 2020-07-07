@@ -4,6 +4,7 @@ import 'package:childspeak/i18n/intl_registry.dart';
 import 'package:childspeak/i18n/registry.dart';
 import 'package:childspeak/ui/page/speaking_session.dart';
 import 'package:childspeak/ui/page/splash.dart';
+import 'package:childspeak/ui/theme/font.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:estd/logger.dart';
 import 'package:estd/type/lateinit.dart';
@@ -81,8 +82,9 @@ class ChildSpeak extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
           primaryColor: Colors.blue,
-          accentColor: Colors.yellowAccent,
+          accentColor: Colors.deepPurpleAccent,
           visualDensity: VisualDensity.adaptivePlatformDensity,
+          fontFamily: ChildSpeakFont.balsamiqSans.asFontFamilyAttribute,
         ),
         routes: const <String, WidgetBuilder>{
           SpeakingSessionPage.name: SpeakingSessionPage.builder,
