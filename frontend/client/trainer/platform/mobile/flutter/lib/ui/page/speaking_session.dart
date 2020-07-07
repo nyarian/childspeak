@@ -94,24 +94,38 @@ class _SpeakingSessionWidget extends StatelessWidget {
         builder: (ctx, snapshot) => Scaffold(
           appBar: AppBar(
             title: Text(messages.entitiesNameSessionPageLabel()),
-            actions: _buildRefreshActionIfHasItems(context, snapshot.data),
+            actions: _buildAppBarActions(context, snapshot.data),
           ),
           body: _buildStateBasedTree(ctx, snapshot.data),
         ),
       );
 
-  List<Widget> _buildRefreshActionIfHasItems(
+  // region AppBar actions
+  List<Widget> _buildAppBarActions(
     BuildContext context,
     EntitiesState state,
   ) =>
       <Widget>[
-        if (state?.isSuccessful ?? false)
-          IconButton(
-            onPressed: () => bloc.refresh(state.localeCode, replace: true),
-            icon: const Icon(Icons.refresh),
-          )
+        if (state?.isSuccessful ?? false) _buildRefreshAction(state.localeCode),
+        if (state?.isSuccessful ?? false) _buildSearchAction(context),
       ];
 
+  Widget _buildRefreshAction(String localeCode) => IconButton(
+        onPressed: () => bloc.refresh(localeCode, replace: true),
+        icon: const Icon(Icons.refresh),
+      );
+
+  Widget _buildSearchAction(BuildContext context) => IconButton(
+        icon: const Icon(Icons.search),
+        onPressed: () => showSearch<String>(
+          context: context,
+          delegate: TagsSearchDelegate(),
+        ),
+      );
+
+  //endregion
+
+  // region Page Content
   Widget _buildStateBasedTree(BuildContext context, EntitiesState state) {
     if (state == null || state.isRetrievingEntities) {
       return Center(child: _buildLoadingTree());
@@ -177,6 +191,7 @@ class _SpeakingSessionWidget extends StatelessWidget {
           ),
         ),
       );
+//endregion
 }
 
 class EntityWidget extends StatelessWidget {
@@ -196,4 +211,26 @@ class EntityWidget extends StatelessWidget {
           child: Image.network(entity.imageUrl),
         ),
       );
+}
+
+class TagsSearchDelegate extends SearchDelegate<String> {
+  @override
+  List<Widget> buildActions(BuildContext context) => <Widget>[
+        IconButton(
+          icon: const Icon(Icons.close),
+          onPressed: () => super.query = '',
+        )
+      ];
+
+  @override
+  Widget buildLeading(BuildContext context) => IconButton(
+        icon: const BackButtonIcon(),
+        onPressed: () => super.close(context, null),
+      );
+
+  @override
+  Widget buildResults(BuildContext context) => Container();
+
+  @override
+  Widget buildSuggestions(BuildContext context) => Container();
 }
