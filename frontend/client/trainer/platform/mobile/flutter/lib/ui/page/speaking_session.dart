@@ -229,8 +229,16 @@ class TagsSearchDelegate extends SearchDelegate<String> {
       );
 
   @override
-  Widget buildResults(BuildContext context) => Container();
+  Widget buildResults(BuildContext context) => ListView(
+    children: [
+      for(int i = 0; i < 10; i++) const Text('Result')
+    ],
+  );
 
   @override
-  Widget buildSuggestions(BuildContext context) => Container();
+  Widget buildSuggestions(BuildContext context) => ListView(
+    children: [
+      for(int i = 0; i < 10; i++) const Text('Suggestion')
+    ],
+  );
 }

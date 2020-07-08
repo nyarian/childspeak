@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/entity/add/facade.dart';
 import 'package:bloc/state.dart';
+import 'package:built_collection/built_collection.dart';
 import 'package:domain/entity.dart';
 import 'package:equatable/equatable.dart';
 import 'package:estd/logger.dart';
@@ -125,8 +126,12 @@ class _CreateEntityEvent implements _EntityCrudEvent {
 
   Future<EntityCrudState> _createEntity(_StateProvider provider) async {
     try {
-      await _facade.add(
-          localeCode, Entity(null, title, Uri.parse(depictionUrl)));
+      final entity = Entity.create(
+        title,
+        Uri.parse(depictionUrl),
+        BuiltList<Category>(),
+      );
+      await _facade.add(localeCode, entity);
       return provider()._copy(status: OperationStatus.success.toOptional);
     } on Object catch (e, st) {
       _logger.logError(e, st);
