@@ -1,4 +1,5 @@
 import 'package:built_collection/built_collection.dart';
+import 'package:domain/src/entity/category/category.dart';
 import 'package:equatable/equatable.dart';
 
 class Entity with EquatableMixin {
@@ -29,13 +30,4 @@ class EntityId with EquatableMixin {
 
   @override
   List<Object> get props => <Object>[asString];
-}
-
-class Category with EquatableMixin {
-  final String title;
-
-  Category(this.title);
-
-  @override
-  List<Object> get props => <Object>[title];
 }

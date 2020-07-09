@@ -1,8 +1,11 @@
 import 'dart:async';
 
+import 'package:bloc/entity/category/bloc.dart';
 import 'package:built_collection/built_collection.dart';
+import 'package:childspeak/assembly/bloc/category.dart';
 import 'package:childspeak/assembly/framework/speaker.dart';
 import 'package:childspeak/i18n/registry.dart';
+import 'package:domain/entity.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_framework/domain/entity/speaker.dart';
 import 'package:presentation/entity.dart';
@@ -119,7 +122,8 @@ class _SpeakingSessionWidget extends StatelessWidget {
         icon: const Icon(Icons.search),
         onPressed: () => showSearch<String>(
           context: context,
-          delegate: TagsSearchDelegate(),
+          delegate: TagsSearchDelegate(const CategoriesBlocFactory()
+              .create(ProviderServiceLocator(context))),
         ),
       );
 
@@ -214,6 +218,10 @@ class EntityWidget extends StatelessWidget {
 }
 
 class TagsSearchDelegate extends SearchDelegate<String> {
+  final CategoriesBloc _bloc;
+
+  TagsSearchDelegate(this._bloc);
+
   @override
   List<Widget> buildActions(BuildContext context) => <Widget>[
         IconButton(
@@ -229,16 +237,40 @@ class TagsSearchDelegate extends SearchDelegate<String> {
       );
 
   @override
-  Widget buildResults(BuildContext context) => ListView(
-    children: [
-      for(int i = 0; i < 10; i++) const Text('Result')
-    ],
-  );
+  Widget buildResults(BuildContext context) {
+    _bloc.onSearch(query);
+    return StreamBuilder<CategoriesState>(
+        initialData: _bloc.currentState,
+        stream: _bloc.state,
+        builder: (ctx, snapshot) => _buildResultsFromState(ctx, snapshot.data),
+      );
+  }
+
+  Widget _buildResultsFromState(BuildContext context, CategoriesState state) {
+    if (state.isIdle) {
+      return Center(child: _buildIdleWidget());
+    } else if (state.isProcessing) {
+      return Center(child: _buildLoadingWidget());
+    } else if (state.hasError) {
+      return Center(child: _buildErrorWidget(state.error));
+    } else {
+      return _buildTags(state.result.categories);
+    }
+  }
+
+  // TODO i18n
+  Widget _buildIdleWidget() => const Text('Please enter a query');
+
+  Widget _buildLoadingWidget() => const CircularProgressIndicator();
+
+  Widget _buildErrorWidget(Object error) => Text('Error occurred: $error');
+
+  Widget _buildTags(BuiltList<Category> categories) => ListView.builder(
+        itemCount: categories.length,
+        itemBuilder: (context, index) =>
+            ListTile(title: Text(categories[index].title)),
+      );
 
   @override
-  Widget buildSuggestions(BuildContext context) => ListView(
-    children: [
-      for(int i = 0; i < 10; i++) const Text('Suggestion')
-    ],
-  );
+  Widget buildSuggestions(BuildContext context) => Container();
 }

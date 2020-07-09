@@ -22,3 +22,6 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  test_estd:
+    path: ../../../backend/test_estd
+  mockito: 4.1.1

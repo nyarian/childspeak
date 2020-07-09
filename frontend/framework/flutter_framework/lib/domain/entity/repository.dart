@@ -22,7 +22,7 @@ class FlutterFirestoreEntityRepository implements EntityRepository {
 
   Query queryEntities(String localeCode, int limit) {
     final Query query = _firestore
-        .collection(FlutterFirestoreEntityRepository._entitiesCollection)
+        .collection(_entitiesCollection)
         .where('$_localeMap.$localeCode', isGreaterThan: '');
     return limit == EntityRepository.noLimit ? query : query.limit(limit);
   }
