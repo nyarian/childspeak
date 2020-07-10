@@ -1,9 +1,15 @@
 {
-  "@@last_modified": "2020-06-28T04:27:21.007223",
+  "@@last_modified": "2020-07-10T20:23:08.229606",
   "@@locale": "en",
+  "unknownError": "Unknown error",
+  "@unknownError": {
+    "description": "Used to inform the user that an unknown error occurred",
+    "type": "text",
+    "placeholders": {}
+  },
   "splashPageAuthenticationError": "Error occurred during server initial interaction: {message}.",
   "@splashPageAuthenticationError": {
-    "description": "Label for the entities naming page from which the user will understand the purpose of it",
+    "description": "Splash page auth check or authentication error description",
     "type": "text",
     "placeholders": {
       "message": {
@@ -44,5 +50,31 @@
     "description": "Informs the user that no entities were received but the fetch operation itself was successful",
     "type": "text",
     "placeholders": {}
+  },
+  "entitiesSearchLabel": "Please enter a category name (or it's part)",
+  "@entitiesSearchLabel": {
+    "description": "Informs user about entities search page intention",
+    "type": "text",
+    "placeholders": {}
+  },
+  "entitiesCategoriesSearchEmptyStateLabel": "Seems that there are no results for \"{query}\"",
+  "@entitiesCategoriesSearchEmptyStateLabel": {
+    "description": "Informs user no results were received for a particular query",
+    "type": "text",
+    "placeholders": {
+      "query": {
+        "example": "asd"
+      }
+    }
+  },
+  "entitiesSearchError": "Error occurred during entities search: {description}.",
+  "@entitiesSearchError": {
+    "description": "Splash page auth check or authentication error description",
+    "type": "text",
+    "placeholders": {
+      "description": {
+        "example": "Internet connection is unavailable"
+      }
+    }
   }
 }

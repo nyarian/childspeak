@@ -122,8 +122,11 @@ class _SpeakingSessionWidget extends StatelessWidget {
         icon: const Icon(Icons.search),
         onPressed: () => showSearch<String>(
           context: context,
-          delegate: TagsSearchDelegate(const CategoriesBlocFactory()
-              .create(ProviderServiceLocator(context))),
+          delegate: TagsSearchDelegate(
+            const CategoriesBlocFactory()
+                .create(ProviderServiceLocator(context)),
+            messages,
+          ),
         ),
       );
 
@@ -219,8 +222,9 @@ class EntityWidget extends StatelessWidget {
 
 class TagsSearchDelegate extends SearchDelegate<String> {
   final CategoriesBloc _bloc;
+  final MessageRegistry _registry;
 
-  TagsSearchDelegate(this._bloc);
+  TagsSearchDelegate(this._bloc, this._registry);
 
   @override
   List<Widget> buildActions(BuildContext context) => <Widget>[
@@ -237,13 +241,20 @@ class TagsSearchDelegate extends SearchDelegate<String> {
       );
 
   @override
+  Widget buildSuggestions(BuildContext context) => buildResults(context);
+
+  @override
   Widget buildResults(BuildContext context) {
-    _bloc.onSearch(query);
+    if (query.isEmpty) {
+      _bloc.onReset();
+    } else {
+      _bloc.onSearch(query);
+    }
     return StreamBuilder<CategoriesState>(
-        initialData: _bloc.currentState,
-        stream: _bloc.state,
-        builder: (ctx, snapshot) => _buildResultsFromState(ctx, snapshot.data),
-      );
+      initialData: _bloc.currentState,
+      stream: _bloc.state,
+      builder: (ctx, snapshot) => _buildResultsFromState(ctx, snapshot.data),
+    );
   }
 
   Widget _buildResultsFromState(BuildContext context, CategoriesState state) {
@@ -253,24 +264,28 @@ class TagsSearchDelegate extends SearchDelegate<String> {
       return Center(child: _buildLoadingWidget());
     } else if (state.hasError) {
       return Center(child: _buildErrorWidget(state.error));
+    } else if (state.result.categories.isEmpty) {
+      return Center(child: _buildEmptyState(context, state.result.query));
     } else {
       return _buildTags(state.result.categories);
     }
   }
 
-  // TODO i18n
-  Widget _buildIdleWidget() => const Text('Please enter a query');
+  Widget _buildIdleWidget() => Text(_registry.entitiesSearchLabel());
 
   Widget _buildLoadingWidget() => const CircularProgressIndicator();
 
-  Widget _buildErrorWidget(Object error) => Text('Error occurred: $error');
+  Widget _buildErrorWidget(Object error) => Text(
+        _registry
+            .entitiesSearchError(error?.toString() ?? _registry.unknownError()),
+      );
+
+  Widget _buildEmptyState(BuildContext context, String query) => Text(
+      _registry.entitiesCategoriesSearchEmptyStateLabel(query));
 
   Widget _buildTags(BuiltList<Category> categories) => ListView.builder(
         itemCount: categories.length,
         itemBuilder: (context, index) =>
             ListTile(title: Text(categories[index].title)),
       );
-
-  @override
-  Widget buildSuggestions(BuildContext context) => Container();
 }

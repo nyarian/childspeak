@@ -6,6 +6,7 @@ import 'package:domain/entity.dart';
 import 'package:equatable/equatable.dart';
 import 'package:estd/logger.dart';
 import 'package:estd/resource.dart';
+import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
 class CategoriesBloc implements Resource {
@@ -16,7 +17,7 @@ class CategoriesBloc implements Resource {
   ]) {
     _stateSubject.add(CategoriesState._idle());
     _eventSC.stream
-        .throttleTime(eventThrottleTime, trailing: true)
+        .debounceTime(eventThrottleTime)
         .switchMap((event) => event._process(() => _stateSubject.value))
         .listen(_stateSubject.add);
   }
@@ -36,6 +37,8 @@ class CategoriesBloc implements Resource {
 
   void onSearch(String query) =>
       _eventSC.add(_SearchCategoriesEvent(query, _logger, _repository));
+
+  void onReset() => _eventSC.add(const _ResetSearchEvent());
 
   @override
   void close() {
@@ -103,7 +106,7 @@ abstract class _CategoriesEvent {
   Stream<CategoriesState> _process(StateProvider provider);
 }
 
-class _SearchCategoriesEvent implements _CategoriesEvent {
+class _SearchCategoriesEvent with EquatableMixin implements _CategoriesEvent {
   final String _query;
   final Logger _logger;
   final CategoryRepository _repository;
@@ -122,6 +125,29 @@ class _SearchCategoriesEvent implements _CategoriesEvent {
       yield CategoriesState._error(e);
     }
   }
+
+  @override
+  List<Object> get props => <Object>[_query];
+
+  @override
+  bool get stringify => true;
+}
+
+@immutable
+class _ResetSearchEvent implements _CategoriesEvent {
+  const _ResetSearchEvent();
+
+  @override
+  Stream<CategoriesState> _process(StateProvider provider) =>
+      Stream.value(CategoriesState._idle());
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is _ResetSearchEvent && runtimeType == other.runtimeType;
+
+  @override
+  int get hashCode => runtimeType.hashCode;
 }
 
 typedef StateProvider = CategoriesState Function();
