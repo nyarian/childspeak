@@ -267,7 +267,7 @@ class TagsSearchDelegate extends SearchDelegate<String> {
     } else if (state.result.categories.isEmpty) {
       return Center(child: _buildEmptyState(context, state.result.query));
     } else {
-      return _buildTags(state.result.categories);
+      return _buildTags(context, state.result.categories);
     }
   }
 
@@ -280,12 +280,16 @@ class TagsSearchDelegate extends SearchDelegate<String> {
             .entitiesSearchError(error?.toString() ?? _registry.unknownError()),
       );
 
-  Widget _buildEmptyState(BuildContext context, String query) => Text(
-      _registry.entitiesCategoriesSearchEmptyStateLabel(query));
+  Widget _buildEmptyState(BuildContext context, String query) =>
+      Text(_registry.entitiesCategoriesSearchEmptyStateLabel(query));
 
-  Widget _buildTags(BuiltList<Category> categories) => ListView.builder(
+  Widget _buildTags(BuildContext context, BuiltList<Category> categories) =>
+      ListView.separated(
         itemCount: categories.length,
-        itemBuilder: (context, index) =>
-            ListTile(title: Text(categories[index].title)),
+        itemBuilder: (context, index) => ListTile(
+          title: Text(categories[index].title),
+          onTap: () => close(context, categories[index].title),
+        ),
+        separatorBuilder: (_, __) => const Divider(),
       );
 }
