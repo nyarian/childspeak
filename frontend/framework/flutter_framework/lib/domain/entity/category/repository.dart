@@ -12,6 +12,7 @@ class InMemoryCategoryRepository implements CategoryRepository {
   @override
   Future<List<Category>> getByTitlePart(String prefix) async => _tags
       .where((tag) => tag.contains(prefix))
+      .toSet()
       .map(Category.fromString)
       .toList();
 }

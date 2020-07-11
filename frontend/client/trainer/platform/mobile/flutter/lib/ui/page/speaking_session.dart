@@ -245,16 +245,20 @@ class TagsSearchDelegate extends SearchDelegate<String> {
 
   @override
   Widget buildResults(BuildContext context) {
-    if (query.isEmpty) {
-      _bloc.onReset();
-    } else {
-      _bloc.onSearch(query);
-    }
+    _updateQuery();
     return StreamBuilder<CategoriesState>(
       initialData: _bloc.currentState,
       stream: _bloc.state,
       builder: (ctx, snapshot) => _buildResultsFromState(ctx, snapshot.data),
     );
+  }
+
+  void _updateQuery() {
+    if (query.isEmpty) {
+      _bloc.onReset();
+    } else {
+      _bloc.onSearch(query);
+    }
   }
 
   Widget _buildResultsFromState(BuildContext context, CategoriesState state) {
