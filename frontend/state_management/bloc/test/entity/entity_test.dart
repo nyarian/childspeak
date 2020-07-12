@@ -17,7 +17,7 @@ void main() {
   EntitiesBloc createTestSubject() => EntitiesBloc(facade, NoOpLogger());
 
   test('assert that newly constructed bloc does not emit anything', () async {
-    when(facade.getAll(any)).thenThrow(TestException());
+    when(facade.getAll(any, any)).thenThrow(TestException());
     final subject = EntitiesBloc(facade, ForbiddenLogger());
     await suspendMillis(20);
     expect(subject.state, emitsInOrder(<dynamic>[]));
@@ -25,9 +25,9 @@ void main() {
 
   test('assert that retrieving state was emitted initially on refresh',
       () async {
-    when(facade.getAll(any))
+    when(facade.getAll(any, any))
         .thenAnswer((_) async => const Tuple2('en', <Entity>[]));
-    final subject = createTestSubject()..refresh('en');
+    final subject = createTestSubject()..refresh('en', const Category('s'));
     expect(
         subject.state,
         emitsInOrder(<dynamic>[
@@ -38,9 +38,9 @@ void main() {
   test(
       'assert that successful and non-loading state was emitted after '
       'receiving the facade response', () async {
-    when(facade.getAll(any))
+    when(facade.getAll(any, any))
         .thenAnswer((_) async => const Tuple2('en', <Entity>[]));
-    final subject = createTestSubject()..refresh('en');
+    final subject = createTestSubject()..refresh('en', const Category('s'));
     await suspendMillis(5);
     expect(
         subject.state,
@@ -51,9 +51,9 @@ void main() {
   }, timeout: const Timeout(Duration(seconds: 1)));
 
   test('assert that state is empty if getAll() returns empty list', () async {
-    when(facade.getAll(any))
+    when(facade.getAll(any, any))
         .thenAnswer((_) async => const Tuple2('en', <Entity>[]));
-    final subject = createTestSubject()..refresh('en');
+    final subject = createTestSubject()..refresh('en', const Category('s'));
     await suspendMillis(5);
     expect(
         subject.state,
@@ -64,9 +64,9 @@ void main() {
 
   test('assert that state is not empty if getAll() returns non-empty list',
       () async {
-    when(facade.getAll(any))
+    when(facade.getAll(any, any))
         .thenAnswer((_) async => Tuple2('en', <Entity>[MockEntity()]));
-    final subject = createTestSubject()..refresh('en');
+    final subject = createTestSubject()..refresh('en', const Category('s'));
     await suspendMillis(5);
     expect(
         subject.state,
@@ -78,8 +78,9 @@ void main() {
   test('assert that error state was emitted if getAll call throws an error',
       () async {
     final givenError = TestException();
-    when(facade.getAll(any)).thenAnswer((_) async => throw TestException());
-    final subject = createTestSubject()..refresh('en');
+    when(facade.getAll(any, any))
+        .thenAnswer((_) async => throw TestException());
+    final subject = createTestSubject()..refresh('en', const Category('s'));
     await suspendMillis(5);
     expect(
         subject.state,
@@ -95,14 +96,14 @@ void main() {
       () async => throw TestException(),
       () async => const Tuple2('en', <Entity>[]),
     ];
-    when(facade.getAll(any)).thenAnswer((_) => answers.removeAt(0)());
-    final subject = createTestSubject()..refresh('en');
+    when(facade.getAll(any, any)).thenAnswer((_) => answers.removeAt(0)());
+    final subject = createTestSubject()..refresh('en', const Category('s'));
     expect(
         subject.state,
         emitsInOrder(<dynamic>[
           anything,
           predicate<EntitiesState>((state) {
-            if (state.hasError) subject.refresh('en');
+            if (state.hasError) subject.refresh('en', const Category('s'));
             return state.hasError;
           }),
           anything,

@@ -93,7 +93,10 @@ void main() {
     () async {
       final tagsCompleter = Completer<List<String>>();
       const givenTags = <String>['one', 'two'];
-      final givenCategories = <Category>[Category('one'), Category('two')];
+      final givenCategories = <Category>[
+        const Category('one'),
+        const Category('two')
+      ];
       when(crossDataMock.fetchTags())
           .thenAnswer((realInvocation) => tagsCompleter.future);
       when(delegateRepositoryMock.getByTitlePart(any))
@@ -113,7 +116,10 @@ void main() {
     () async {
       final errorCompleter = Completer<List<String>>();
       final tagsCompleter = Completer<List<String>>();
-      final givenCategories = <Category>[Category('one'), Category('two')];
+      final givenCategories = <Category>[
+        const Category('one'),
+        const Category('two')
+      ];
       final tagsAnswers = <Future<List<String>>>[
         errorCompleter.future,
         tagsCompleter.future,
@@ -140,7 +146,10 @@ void main() {
     'assert that tags were only fetched twice if for 3 calls where first '
     'fetch gave an error',
     () async {
-      final givenCategories = <Category>[Category('one'), Category('two')];
+      final givenCategories = <Category>[
+        const Category('one'),
+        const Category('two')
+      ];
       final tagsAnswers = <Future<List<String>> Function()>[
         () => Future<List<String>>.error(TestException()),
         () => Future<List<String>>.value(<String>['one', 'two']),
@@ -165,8 +174,8 @@ void main() {
     () async {
       when(crossDataMock.fetchTags())
           .thenAnswer((_) => <String>['one', 'two'].asFuture());
-      when(delegateRepositoryMock.getByTitlePart(any)).thenAnswer(
-          (_) => <Category>[Category('one'), Category('two')].asFuture());
+      when(delegateRepositoryMock.getByTitlePart(any)).thenAnswer((_) =>
+          <Category>[const Category('one'), const Category('two')].asFuture());
       FirestoreCategoryRepositoryProxy proxy = createTestSubject();
       await expectLater(proxy.getByTitlePart('pref'), completes);
       await expectLater(proxy.getByTitlePart('pref'), completes);

@@ -1,16 +1,24 @@
-import 'package:equatable/equatable.dart';
+import 'package:meta/meta.dart';
 
-class Category with EquatableMixin {
+@immutable
+class Category {
   final String title;
 
-  Category(this.title);
+  const Category(this.title);
 
   // ignore: prefer_constructors_over_static_methods
   static Category fromString(String title) => Category(title);
 
   @override
-  List<Object> get props => <Object>[title];
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Category &&
+          runtimeType == other.runtimeType &&
+          title == other.title;
 
   @override
-  bool get stringify => true;
+  int get hashCode => title.hashCode;
+
+  @override
+  String toString() => 'Category{title: $title}';
 }

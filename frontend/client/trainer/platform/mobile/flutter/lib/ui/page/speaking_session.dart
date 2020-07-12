@@ -11,9 +11,9 @@ import 'package:flutter_framework/domain/entity/speaker.dart';
 import 'package:presentation/entity.dart';
 import 'package:bloc/entity/bloc.dart';
 import 'package:childspeak/assembly/bloc/entities.dart';
-import 'package:estd/type/lateinit.dart';
 import 'package:flutter_framework/ioc/provider_locator.dart';
 import 'package:flutter/material.dart';
+import 'package:estd/type/null.dart';
 
 class SpeakingSessionPage extends StatefulWidget {
   static const String name = 'speaking_session';
@@ -29,51 +29,47 @@ class SpeakingSessionPage extends StatefulWidget {
 }
 
 class _SpeakingSessionPageState extends State<SpeakingSessionPage> {
-  final ImmutableLateinit<EntitiesBloc> _blocRef =
-      ImmutableLateinit<EntitiesBloc>.unset();
-  final ImmutableLateinit<EntitySpeaker> _speakerRef =
-      ImmutableLateinit<EntitySpeaker>.unset();
-  final ImmutableLateinit<StreamSubscription<Object>>
-      _speakerLocaleUpdatingSubscriptionRef =
-      ImmutableLateinit<StreamSubscription<Object>>.unset();
+  EntitiesBloc _bloc;
+  EntitySpeaker _speaker;
+  StreamSubscription<Object> _speakerLocaleUpdatingSubscription;
 
   @override
   void initState() {
     super.initState();
     var locator = ProviderServiceLocator(context);
-    _blocRef.value = EntitiesBlocFactory().create(locator);
-    _speakerRef.value = EntitySpeakerFactory().create(locator);
-    _speakerLocaleUpdatingSubscriptionRef.value = _blocRef.value.state
-        .where((state) => state.localeCode != null)
+    _bloc = EntitiesBlocFactory().create(locator);
+    _speaker = EntitySpeakerFactory().create(locator);
+    _speakerLocaleUpdatingSubscription = _bloc.state
         .map((state) => state.localeCode)
+        .where(isNotNull)
         .distinct()
-        .listen(_speakerRef.value.setLanguage);
+        .listen(_speaker.setLanguage);
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    EntitiesState currentState = _blocRef.value.currentState;
+    EntitiesState currentState = _bloc.currentState;
     String currentLocale = Localizations.localeOf(context).languageCode;
     if (currentState == null ||
         (currentState.isSuccessful &&
             currentState.localeCode != currentLocale)) {
-      _blocRef.value.refresh(currentLocale);
+      _bloc.refresh(currentLocale, _bloc.currentState?.category);
     }
   }
 
   @override
   void dispose() {
     super.dispose();
-    _speakerLocaleUpdatingSubscriptionRef.value.cancel();
-    _blocRef.value.close();
-    _speakerRef.value.close();
+    _speakerLocaleUpdatingSubscription.cancel();
+    _bloc.close();
+    _speaker.close();
   }
 
   @override
   Widget build(BuildContext context) => _SpeakingSessionWidget(
-        bloc: _blocRef.value,
-        speaker: _speakerRef.value,
+        bloc: _bloc,
+        speaker: _speaker,
         messages: ProviderServiceLocator(context).get<MessageRegistry>(),
       );
 }
@@ -110,24 +106,29 @@ class _SpeakingSessionWidget extends StatelessWidget {
   ) =>
       <Widget>[
         if (state?.isSuccessful ?? false) _buildRefreshAction(state.localeCode),
-        if (state?.isSuccessful ?? false) _buildSearchAction(context),
+        if (state?.isSuccessful ?? false)
+          _buildSearchAction(context, state.localeCode),
       ];
 
   Widget _buildRefreshAction(String localeCode) => IconButton(
-        onPressed: () => bloc.refresh(localeCode, replace: true),
+        onPressed: () => bloc.refresh(localeCode, bloc.currentState.category),
         icon: const Icon(Icons.refresh),
       );
 
-  Widget _buildSearchAction(BuildContext context) => IconButton(
+  Widget _buildSearchAction(BuildContext context, String localeCode) =>
+      IconButton(
         icon: const Icon(Icons.search),
-        onPressed: () => showSearch<String>(
-          context: context,
-          delegate: TagsSearchDelegate(
-            const CategoriesBlocFactory()
-                .create(ProviderServiceLocator(context)),
-            messages,
-          ),
-        ),
+        onPressed: () async {
+          final category = await showSearch<Category>(
+            context: context,
+            delegate: TagsSearchDelegate(
+              const CategoriesBlocFactory()
+                  .create(ProviderServiceLocator(context)),
+              messages,
+            ),
+          );
+          bloc.refresh(localeCode, category);
+        },
       );
 
   //endregion
@@ -157,8 +158,9 @@ class _SpeakingSessionWidget extends StatelessWidget {
           const SizedBox(height: 8),
           IconButton(
             icon: const Icon(Icons.refresh),
-            onPressed: () =>
-                bloc.refresh(Localizations.localeOf(context).languageCode),
+            onPressed: () => bloc.refresh(
+                Localizations.localeOf(context).languageCode,
+                bloc.currentState.category),
           )
         ],
       );
@@ -179,8 +181,9 @@ class _SpeakingSessionWidget extends StatelessWidget {
           const SizedBox(height: 8),
           IconButton(
             icon: const Icon(Icons.refresh),
-            onPressed: () =>
-                bloc.refresh(Localizations.localeOf(context).languageCode),
+            onPressed: () => bloc.refresh(
+                Localizations.localeOf(context).languageCode,
+                bloc.currentState.category),
           )
         ],
       );
@@ -220,7 +223,7 @@ class EntityWidget extends StatelessWidget {
       );
 }
 
-class TagsSearchDelegate extends SearchDelegate<String> {
+class TagsSearchDelegate extends SearchDelegate<Category> {
   final CategoriesBloc _bloc;
   final MessageRegistry _registry;
 
@@ -292,7 +295,7 @@ class TagsSearchDelegate extends SearchDelegate<String> {
         itemCount: categories.length,
         itemBuilder: (context, index) => ListTile(
           title: Text(categories[index].title),
-          onTap: () => close(context, categories[index].title),
+          onTap: () => close(context, categories[index]),
         ),
         separatorBuilder: (_, __) => const Divider(),
       );

@@ -8,3 +8,4 @@ environment:
 dependencies:
   equatable: 1.2.0
   built_collection: 4.3.2
+  meta: 1.1.8

@@ -55,7 +55,10 @@ void main() {
     'assert that successful state is emitted if repository has returned a list',
     () async {
       const givenQuery = 'asdqwqe';
-      final givenCategories = <Category>[Category('asdasd'), Category('asdsa')];
+      final givenCategories = <Category>[
+        const Category('asdasd'),
+        const Category('asdsa')
+      ];
       when(mockRepository.getByTitlePart(any))
           .thenAnswer((_) => givenCategories.asFuture());
       final subject = createTestSubject()..onSearch(givenQuery);
