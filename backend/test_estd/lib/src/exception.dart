@@ -3,3 +3,13 @@ class TestException implements Exception {
 
   const TestException._const();
 }
+
+class UnexpectedException implements Exception {
+  const UnexpectedException();
+}
+
+void safeCall(void Function() callable) {
+  try {
+    callable();
+  } on Object catch (_) {}
+}

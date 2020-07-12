@@ -1,4 +1,10 @@
 abstract class MessageRegistry {
+
+  //region Common messages
+  String unknownError();
+
+  //endregion
+
   //region Splash page
 
   String splashPageAuthenticationError(String message);
@@ -15,6 +21,12 @@ abstract class MessageRegistry {
   String entitiesLoadingLabel();
 
   String entitiesEmptyStateLabel();
+
+  String entitiesSearchLabel();
+
+  String entitiesCategoriesSearchEmptyStateLabel(String query);
+
+  String entitiesSearchError(String description);
   //endregion
 
 }
